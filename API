@@ -1,0 +1,6 @@
+GITHUB API
+Activity：开发者关注的事件通知。
+Gists：以编程的方式创建和分享代码片段。
+Git Data：通过远程API访问原始的Git数据。
+Issues：添加和修改工单。
+Miscellaneous：无法纳入其它分类的API。
