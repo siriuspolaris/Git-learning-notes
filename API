@@ -1,6 +1,15 @@
-GITHUB API
+GitHub API
 Activity：开发者关注的事件通知。
 Gists：以编程的方式创建和分享代码片段。
 Git Data：通过远程API访问原始的Git数据。
 Issues：添加和修改工单。
 Miscellaneous：无法纳入其它分类的API。
+Organizations：存取组织成员数据。
+Pull Requests：一个强大的API，建构在合并过程之上。
+Repositories：修改与仓库有关的一切数据。
+Search：在整个GitHub数据库中搜索代码。
+Users：访问用户数据
+Enterprise：企业内部的GitHub专用API。
+Jekyll和gh-pages：托管博客和静态文档。
+Gollum：与仓库关联的维基。
+Hubot：GitHub广泛使用的可编程聊天机器人。
