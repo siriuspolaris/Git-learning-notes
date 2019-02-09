@@ -3,3 +3,4 @@
 
 http://marklodato.github.com/visual-git-guide/index-zh-cn.html
 https://my.oschina.net/xdev/blog/114383
+https://git-scm.com/book/zh/v2
