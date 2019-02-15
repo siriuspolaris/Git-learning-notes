@@ -1,0 +1,19 @@
+##升级Ubuntu
+
+1.apt-get update 与 apt-get ugrade
+
+　　其实这个和Ubuntu升级没关系，这是升级安装包相关的命令,apt-get update 是刷新可安装的软件列表（但是不做任何实际的安装动作。）apt-get upgrade这个是进行安装包的更新（这是软件版本的升级）。
+
+2.apt-get dist-upgrade
+
+　　Ubuntu出身于Debian，所以也可以用apt-get dist-upgrade进行版本升级（Ubuntu版本的升级），但是在Ubuntu中，推荐另外一个命令来升级do-release-upgrade.原因如下：
+
+3.do-release-upgrade
+
+　　这是Ubuntu官方推荐的升级方式，官方的解释：
+
+    Debian based systems can also be upgraded by using apt-get dist-upgrade. However, using do-release-upgrade is recommended because it has the ability to handle system configuration changes sometimes needed between releases.
+
+    另外这个命令还可以跟参数do-release-upgrade -d，这个是升级到开发版本，所以会不稳定，不建议在生产环境使用.
+
+　　Upgrading to a development release is not recommended for production environments.
