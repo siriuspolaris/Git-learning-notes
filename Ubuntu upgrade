@@ -17,3 +17,5 @@
     另外这个命令还可以跟参数do-release-upgrade -d，这个是升级到开发版本，所以会不稳定，不建议在生产环境使用.
 
 　　Upgrading to a development release is not recommended for production environments.
+
+Ubuntu在命令行界面下，运行startx启动图形界面。
