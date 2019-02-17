@@ -1,0 +1,217 @@
+Git Large File Storage 适用于大文件版本管理的开源 Git 插件
+在远程 Git 服务器上存储大文件（例如音频样本、视频、数据集、图形文件等）时，Git 大文件存储（LFS）会将文件内容替换成文本指针储存在 Git 中。
+
+
+简单使用
+
+    1. 下载并且安装 Git 命令行插件后。你只需要进行一次 Git LFS 的安装操作。
+
+    git lfs install
+
+    2. 选择你希望用 Git LFS 管理的文件扩展类型（或者直接编辑你的 .gitattributes 文件）。你可以随时修改配置增加新的文件扩展类型。
+
+    git lfs track "*.psd"
+
+    用下面命令确保 .gitattributes 是被追踪的
+
+    git add .gitattributes
+
+    3. 已经完成了！现在你可以正常提交记录并推送到 Coding.net。
+
+    git add file.psd
+    git commit -m "Add design file"
+    git push origin master
+
+Git LFS（Large File Storage, 大文件存储）是 Github 开发的一个 Git 的扩展，用于实现 Git 对大文件的支持。
+
+Git LFS可以把音乐、图片、视频等指定的任意文件存在 Git 仓库之外，而在 Git 仓库中用一个占用空间 1KB 不到的文本指针来代替文件的存在。
+
+通过把大文件存储在 Git 仓库之外，可以减小 Git 仓库本身的体积，使克隆 Git 仓库的速度加快，也使得 Git 不会因为仓库中充满大文件而损失性能。
+
+使用 Git LFS，在默认情况下，只有当前签出的 commit 下的 LFS 对象的当前版本会被下载。此外，我们也可以做配置，只取由 Git LFS 管理的某些特定文件的实际内容，而对于其他由 Git LFS 管理的文件则只保留文件指针，从而节省带宽，加快克隆仓库的速度；也可以配置一次获取大文件的最近版本，从而能方便地检查大文件的近期变动。详见后文进阶使用。
+
+要使用 Git LFS 只需要经过一次下载安装后，指定需要由 Git LFS 管理的文件即可。
+Git LFS 下载和安装
+
+    注意：安装 Git LFS 需要 Git 的版本不低于 1.8.5
+    Git LFS 官网： https://git-lfs.github.com/
+
+Windows 系统
+
+    通过https://git-lfs.github.com/下载 Git LFS 安装包。
+    双击安装包，打开安装 git-lfs
+    在命令行中执行 git lfs install（需要确认 git-lfs 命令已经被包含在环境变量中）
+
+BSD / Linux 系统
+
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+sudo apt-get install git-lfs
+git lfs install
+
+macOS 系统
+
+brew install git-lfs
+git lfs install
+
+
+Git LFS 配置
+
+使用 git lfs track 追踪需要使用 Git LFS 管理的文件。如将后缀名为psd的文件利用LFS存储：
+
+git lfs track "*.psd"
+
+也可以手动编辑 Git 仓库根目录下的 .gitattributes 文件（注意编辑或配置之后要用add命令把此文件也加入并提交到仓库管理），如：
+
+*.psd filter=lfs diff=lfs merge=lfs -text
+
+也可以告诉 LFS 追踪整个文件夹里的所有内容：
+
+git lfs track "design-assets/*"
+
+常用 Git LFS 命令
+
+查看当前使用 Git LFS 管理的匹配列表
+
+git lfs track
+
+使用 Git LFS 管理指定的文件
+
+git lfs track "*.psd"
+
+不再使用 Git LFS 管理指定的文件
+
+git lfs untrack "*.psd"
+
+类似 git status，查看当前 Git LFS 对象的状态
+
+git lfs status
+
+枚举目前所有被 Git LFS 管理的具体文件
+
+git lfs ls-files
+
+检查当前所用 Git LFS 的版本
+
+git lfs version
+
+    针对使用了 LFS 的仓库进行了特别优化的 clone 命令，显著提升获取LFS 对象的速度，接受和 git clone 一样的参数。
+
+git lfs clone https://github.com/user/repo.git
+
+        git lfs clone 通过合并获取 LFS 对象的请求，减少了 LFS API 的调用，并行化 LFS 对象的下载，从而达到显著的速度提升。git lfs clone 命令同样也兼容没有使用 LFS 的仓库。即无论要克隆的仓库是否使用 LFS，都可以使用 git lfs clone 命令来进行克隆。
+        目前最新版本的 git clone 已经能够提供与 git lfs clone 一致的性能，因此自 Git LFS 2.3.0 版本起，git lfs clone 已不再推荐使用。
+
+Git LFS 进阶使用
+
+使用 Git LFS 的核心思想就是把需要进行版本管理、但又占用很大空间的那部分文件独立于 Git 仓库进行管理。从而加快克隆仓库本身的速度，同时获得灵活的管理 LFS 对象的能力。
+
+默认情况下，只有当前 commit 下的 LFS 对象的当前版本才会被获取。
+
+    只获取仓库本身，而不获取任何 LFS 对象
+
+如果自己的相关工作不涉及到被 Git LFS 所管理的文件的话，可以选择只获取 Git 仓库自身的内容，而完全跳过 LFS 对象的获取。
+
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/user/repo.git
+# 或
+git -c filter.lfs.smudge= -c filter.lfs.required=false clone https://github.com/user/repo.git
+
+    注：GIT_LFS_SKIP_SMUDGE=1 及 git -c filter.lfs.smudge= -c filter.lfs.required=false 同样使用于其他 git 命令，如 checkout, reset 等。
+
+    获取当前 commit 下包含的 LFS 对象的当前版本
+
+如果起初获取代码时，没有一并获取 LFS 对象，而随后又需要这些被 LFS 管理的文件时，可以单独执行 LFS 命令来获取并签出 LFS 对象：
+
+git lfs fetch
+git lfs checkout
+# 或
+git lfs pull
+
+    仅获取指定目录下的 LFS 对象
+
+比如说，我们有一仓库，里面包含了许多源代码文件，以及一些图像、视频等资源文件，其目录结构如下：
+
+zzz.buzz
+├── images
+│   ├── cat.png
+│   ├── dog.gif
+│   └── rabbit.webp
+├── src
+│   ├── buzz.css
+│   ├── index.html
+│   └── zzz.js
+└── videos
+    ├── chameleon.mp4
+    └── iguana.webm
+
+其中的 images/** 以及 videos/** 是被 LFS 所管理的。
+
+但是，如果只想取 images 文件夹，而不想获取 videos 文件夹下的文件的话，我们就可以选择配置 LFS 下载对象时仅包含 images 文件夹：
+
+git config lfs.fetchinclude 'images/**'
+
+随后，git checkout, git reset, git lfs fetch, git lfs pull 等命令就都会只处理所指定的文件夹。
+
+类似地，我们也可以选择仅排除指定的文件夹：
+
+git config lfs.fetchexclude 'videos/**'
+
+也可以同时使用黑白名单规则，这样只有同时满足 include 规则和 exclude 规则的大文件才会被获取：
+
+git config lfs.fetchinclude 'videos/**'
+git config lfs.fetchexclude 'videos/chameleon.mp4'
+# 在此例中，如此配置将只会获取 videos/iguana.webm 一个文件。
+
+    一次获取 LFS 对象的最近版本
+    Git LFS 相关命令在获取 LFS 对象时，默认仅会获取该对象当前被引用的版本，如果想要一次获取 LFS 对象的当前及最近版本的话，我们首先需要对最近进行定义：
+
+git config lfs.fetchrecentcommitsdays 7
+
+7 表示同时下载过去 7 天内的版本（相对于获取的 LFS 对象的时间），该项配置默认值为 0，即不获取过去的版本，而仅获取指定的版本。
+
+有了对最近的定义后，我们可以选择在执行 git lfs fetch 命令时，加上 --recent 参数以同时获取最近版本；
+
+或者配置
+
+git config lfs.fetchrecentalways true
+
+从而总是同时获取 LFS 对象的最近版本。
+
+常见问题
+
+在安装 Git LFS 之前，克隆了使用 Git LFS 的仓库，则被 Git LFS 管理的文件会被显示为文本指针，而非具体的文件。
+
+查看这些文件指针，会发现类似如下内容：
+
+version https://git-lfs.github.com/spec/v1
+oid sha256:4b99dbe6fe6f646b2026de93481045bbf34f995559db15fce34d192f1f320ef4
+size 156154
+
+解决办法就是，手动执行获取 Git LFS 对象的命令：
+
+git lfs fetch
+git lfs checkout
+# 或
+git lfs pull
+
+    Git LFS 对象在本地仓库的存放位置？
+
+通过 Git LFS 所管理的对象实际在本地的存储位置是在 .git/lfs/objects 目录下，该目录根据对象的 sha256 值来组织。
+
+作为对比，Git 自身所管理的对象则是存储在 .git/objects 目录下，根据 commit, tree, blob, tag 的 sha1 值来组织。
+
+已经使用 git lfs track somefile 追踪了某个文件，但该文件并未以 LFS 存储。
+
+如果被 LFS 追踪管理的文件的大小为 0 的话，则该文件不会以 LFS 的形式存储起来。
+
+只有当一个文件至少有 1 个字节时，其才会以 LFS 的形式存储。
+
+    注：一般使用 LFS 时，我们也不会用其追踪空文件，即使追踪了空文件，对于使用也没有任何影响。提到这点主要是为了消除在测试使用 LFS 时可能遇到的困惑。
+
+    执行 git lfs fetch 或 git lfs pull 时报错
+
+batch request: exit status 255: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+如果在克隆仓库时使用了 SSH 协议，而本地的 SSH 私钥又有密码保护，那么向服务器获取文件时就会报错，因为目前 Git LFS 不会向用户请求密码，从而导致认证失败。
+
+解决办法是使用 ssh-add 命令，预先加载好本地的 SSH 私钥，从而使得 Git LFS 能够访问到私钥。
+
