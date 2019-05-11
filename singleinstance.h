@@ -16,12 +16,7 @@ private:
 	SingleInstance & operator = (const SingleInstance &) = delete;
 	SingleInstance & operator = (const SingleInstance &&) = delete;
 	~SingleInstance();
-	class Garbo
-	{
-	public:
-		Garbo();
-		~Garbo();
-	};
+	class Garbo { public: Garbo(); ~Garbo(); };
 	static Garbo gc;
 };
 

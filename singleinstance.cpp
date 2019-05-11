@@ -2,8 +2,6 @@
 
 #include "singleinstance.h"
 
-using namespace std;
-
 SingleInstance & SingleInstance::getInstance()
 {
        	return *pSI;
@@ -11,7 +9,7 @@ SingleInstance & SingleInstance::getInstance()
 
 void SingleInstance::print()
 {
-       	cout << "single instance print: " << value << endl;
+	std::cout << "single instance print: " << value << std::endl;
 }
 
 void SingleInstance::set(int i)
@@ -21,23 +19,24 @@ void SingleInstance::set(int i)
 
 SingleInstance::SingleInstance() : value(0)
 {
-       	cout << "single instance constructor" << endl;
+	std::cout << "single instance constructor" << std::endl;
 }
 
 SingleInstance::~SingleInstance()
 {
-       	cout << "single instance deconstructor" << endl;
+	std::cout << "single instance deconstructor" << std::endl;
 }
 
 SingleInstance::Garbo::Garbo()
 {
-	cout << "Garbo constructor" << endl;
+	std::cout << "Garbo constructor" << std::endl;
 }
 
 SingleInstance::Garbo::~Garbo()
 {
-	cout << "Garbo deconstructor" << endl;
+	std::cout << "Garbo deconstructor" << std::endl;
 	delete pSI; pSI = nullptr;
+	std::cout << "gc end" << std::endl;
 }
 
 SingleInstance * SingleInstance::pSI = new SingleInstance();
