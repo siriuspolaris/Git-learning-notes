@@ -8,8 +8,6 @@ public:
 	void print();
 	void set(int i);
 private:
-	static SingleInstance * pSI;
-	int value;
 	SingleInstance();
 	SingleInstance(const SingleInstance &) = delete;
 	SingleInstance(const SingleInstance &&) = delete;
@@ -18,6 +16,8 @@ private:
 	~SingleInstance();
 	class Garbo { public: Garbo(); ~Garbo(); };
 	static Garbo gc;
+	static SingleInstance * pSI;
+	int value;
 };
 
 #endif //SINGLEINSTANCE_H
